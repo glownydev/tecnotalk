@@ -1,0 +1,187 @@
+# Cahier des charges — TECHNOTALK (application Electron)
+
+## 1. Contexte & objectifs
+
+**Contexte :**  
+Madame Tabet (T-H-A-B-E-T) utilise un panneau admin web pour gérer élèves, classes, points (positifs/négatifs) et « croix » (chaque croix = 10 points négatifs). L’objectif est de fournir une application Electron en français permettant de récupérer et afficher ces données, d’ajouter/retirer points, croix, commentaires, de rechercher, d’importer/exporter (CSV, PDF), et d’expérimenter un mode micro.
+
+**Objectif principal :**  
+Fournir une application desktop (Windows/Mac/Linux) en TypeScript, communiquant avec une API (hébergée sur Vercel) connectée à une base SQL (hébergée sur app.tamimkh.com ou domaine final), avec une UX fluide, notifications et paramètres (mode nuit, expérimental micro…).
+
+---
+
+## 2. Public cible
+
+- **Enseignante :** Madame Tabay et autres professeurs.
+- **Administrateurs :** Accès au panneau admin web pour gestion avancée.
+
+---
+
+## 3. Contraintes techniques
+
+- **Client desktop :** Electron (React + TypeScript/TSX).
+- **Frontend web UI :** Next.js + TypeScript + TurboPack, TailwindCSS, shadcn/ui.
+- **API :** Déployée sur Vercel (serverless/edge functions).
+- **Base de données :** SQL (PostgreSQL recommandé), hébergée sur app.tamimkh.com.
+- **Langue :** Français (UI, messages, docs).
+- **Fichiers :** Import/export CSV (PDF optionnel).
+- **Auth/admin :** Mot de passe Admin pour modifications via le site.
+- **Conventions :** Tout en TypeScript, JSX = TSX.
+
+---
+
+## 4. Périmètre fonctionnel
+
+### 4.1 Authentification & sécurité
+
+- Lecture publique via API sécurisée (token ou login).
+- Modifications (ajout/suppression) réservées à l’admin via le site.
+- Credentials stockés côté serveur (ENV).
+
+### 4.2 Synchronisation & flux données
+
+- L’app Electron interroge l’API sur Vercel, qui interroge la base SQL et renvoie du JSON.
+- Endpoints principaux : GET classes, GET élèves, POST action, POST import-csv, GET export-report.
+
+### 4.3 Gestion des classes & élèves
+
+- Liste des classes, clic pour voir les élèves.
+- Création/suppression de classes/élèves via le site admin.
+- Sélection multiple et suppression groupée (admin site).
+- Recherche dynamique sur les noms d’élèves.
+
+### 4.4 Actions sur élèves
+
+- Ajouter point positif/négatif, croix (10 points négatifs), commentaire.
+- Toast de confirmation, mise à jour immédiate (optimistic UI).
+- Historique/commentaires accessibles depuis la fiche élève.
+
+### 4.5 Import / Export
+
+- **Import CSV :** Via le site admin (l’app propose d’ouvrir la page ou upload direct si autorisé).
+- **Export rapports :** Depuis l’app (CSV/PDF), téléchargement local.
+
+### 4.6 Notifications & popups
+
+- Toasts pour actions réussies/erreurs.
+- Popup commentaire après ajout via micro.
+- Notification modale au démarrage si export/validation en attente.
+
+### 4.7 Paramètres
+
+- Mode expérimental (micro), mode nuit/clair, langue (FR par défaut), notifications, aide.
+
+### 4.8 Mode expérimental — détection micro
+
+- Si un prénom est répété 5 fois (détection vocale), ajout automatique d’une croix pour l’élève détecté, avec popup commentaire.
+- Consentement obligatoire, micro désactivable, données audio locales.
+
+---
+
+## 5. Architecture technique
+
+- **Client :** Electron + React (TSX) + TypeScript + TailwindCSS + shadcn/ui.
+- **API :** Next.js (API routes, TypeScript), REST recommandé, Prisma ORM.
+- **Base SQL :** PostgreSQL (recommandé) ou MySQL.
+- **CI/CD :** GitHub, déploiement Vercel, packaging Electron via GH Actions.
+
+---
+
+## 6. Modèle de données (SQL)
+
+- `classes` (id, nom, created_at)
+- `students` (id, class_id, prenom, nom, matricule?, created_at)
+- `users` (id, username, password_hash, role)
+- `events` (id, student_id, type ENUM('pos','neg','croix'), points INT, commentaire TEXT, auteur_id, created_at)
+- `imports` (id, filename, status, created_at)
+- `reports` (id, type, path, created_at)
+
+Ex : croix = event.type='croix', event.points=-10.
+
+---
+
+## 7. API endpoints (exemples)
+
+- `GET /api/classes` — liste classes
+- `GET /api/classes/:id/students` — élèves d’une classe
+- `GET /api/students/:id` — fiche élève + historique
+- `POST /api/events` — créer event (student_id, type, points, commentaire, auteur)
+- `POST /api/import` — upload CSV (si activé)
+- `GET /api/export?class_id=...&from=...&to=...` — export CSV/PDF
+- `POST /api/auth/login` — login admin (site)
+- `GET /api/pending-validation` — flag export en attente
+
+---
+
+## 8. Sécurité & conformité
+
+- TLS/HTTPS partout.
+- Credentials sécurisés (ENV).
+- Protection CSRF pour admin.
+- Validation/sanitation serveur (ORM).
+- Logs d’audit pour chaque action.
+- Consentement micro, option purge audio.
+- Contrôle d’accès strict.
+
+---
+
+## 9. UI / UX (composants)
+
+- Accueil : liste classes, recherche.
+- Fiche classe : élèves, actions, sélection multiple.
+- Fiche élève : historique, commentaires.
+- Popup commentaire : textarea, suggestions, OK/Annuler.
+- Paramètres : mode expérimental, nuit/clair, aide.
+- Aide : explications, FAQ.
+- Notifications : toasts, modales.
+
+---
+
+## 10. Tests & recette
+
+- Tests unitaires : logique points, import CSV.
+- Tests intégration : endpoints API.
+- Tests E2E : scénario complet (ajout croix, popup micro).
+- Tests mode micro : simulation ou manuel.
+- Critères d’acceptation : conformité UI, actions, sécurité.
+
+---
+
+## 11. Journal des livrables
+
+- Repo Git (frontend/electron, backend/next).
+- README + guide déploiement.
+- Scripts build/packaging Electron.
+- Doc exploitation (DB, reset admin).
+- Rapport de tests + checklist.
+- Binaires installateurs (optionnel).
+
+---
+
+## 12. Points ouverts / décisions à confirmer
+
+- SGBD : PostgreSQL recommandé — à confirmer.
+- Import CSV : site web seulement ou API ?
+- Endpoint/domaine final à confirmer.
+- Auth côté app : lecture seule ou actions directes ?
+- Format rapports : CSV/PDF — préciser besoins PDF.
+
+---
+
+## 13. Exemples d’UX mode micro
+
+- Paramètres → Activer “Mode expérimental (micro)” (case à cocher, consentement).
+- Détection prénom ≥5 fois/20s → animation, popup croix.
+- Popup : “Voulez-vous mettre un commentaire ?” (textarea, suggestions, OK/Annuler).
+- Si OK : envoi event, toast confirmation.
+
+---
+
+## 14. Maintenance / évolutivité
+
+- Versioning API (v1/v2).
+- Pagination listes.
+- Webhooks (optionnel).
+- Monitoring/alertes Vercel/DB.
+
+---
