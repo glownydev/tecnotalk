@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tecnotalk API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #2563eb;
+        }
+        .endpoint {
+            background-color: #f3f4f6;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.5rem;
+        }
+        .method {
+            font-weight: bold;
+            color: #059669;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bienvenue sur l'API Tecnotalk</h1>
+    <p>Cette API fournit les endpoints suivants :</p>
+    
+    <div class="endpoint">
+        <h2>Authentification</h2>
+        <p><span class="method">POST</span> /api/users/register - Inscription d'un nouvel utilisateur</p>
+        <p><span class="method">POST</span> /api/users/login - Connexion d'un utilisateur</p>
+    </div>
+
+    <div class="endpoint">
+        <h2>Classes</h2>
+        <p><span class="method">GET</span> /api/classes - Liste des classes</p>
+        <p><span class="method">POST</span> /api/classes - Création d'une classe</p>
+        <p><span class="method">GET</span> /api/classes/:id - Détails d'une classe</p>
+        <p><span class="method">PUT</span> /api/classes/:id - Modification d'une classe</p>
+        <p><span class="method">DELETE</span> /api/classes/:id - Suppression d'une classe</p>
+    </div>
+
+    <div class="endpoint">
+        <h2>Élèves</h2>
+        <p><span class="method">GET</span> /api/students - Liste des élèves</p>
+        <p><span class="method">POST</span> /api/students - Création d'un élève</p>
+        <p><span class="method">GET</span> /api/students/:id - Détails d'un élève</p>
+        <p><span class="method">PUT</span> /api/students/:id - Modification d'un élève</p>
+        <p><span class="method">DELETE</span> /api/students/:id - Suppression d'un élève</p>
+    </div>
+
+    <div class="endpoint">
+        <h2>Événements</h2>
+        <p><span class="method">GET</span> /api/events - Liste des événements</p>
+        <p><span class="method">POST</span> /api/events - Création d'un événement</p>
+        <p><span class="method">GET</span> /api/events/:id - Détails d'un événement</p>
+        <p><span class="method">PUT</span> /api/events/:id - Modification d'un événement</p>
+        <p><span class="method">DELETE</span> /api/events/:id - Suppression d'un événement</p>
+    </div>
+</body>
+</html>

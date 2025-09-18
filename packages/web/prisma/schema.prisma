@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum EventType {
+  pos
+  neg
+  croix
+}
+
+model Class {
+  id        Int       @id @default(autoincrement())
+  name      String
+  createdAt DateTime  @default(now())
+  students  Student[]
+}
+
+model Student {
+  id        Int      @id @default(autoincrement())
+  classId   Int
+  firstName String
+  lastName  String
+  matricule String?
+  createdAt DateTime @default(now())
+  class     Class    @relation(fields: [classId], references: [id])
+  events    Event[]
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  username     String   @unique
+  passwordHash String
+  role         String
+  createdAt    DateTime @default(now())
+  events       Event[]
+}
+
+model Event {
+  id        Int      @id @default(autoincrement())
+  studentId Int
+  type      EventType
+  points    Int
+  comment   String?
+  authorId  Int
+  createdAt DateTime @default(now())
+  student   Student  @relation(fields: [studentId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id])
+}
+
+model Import {
+  id        Int      @id @default(autoincrement())
+  filename  String
+  status    String
+  createdAt DateTime @default(now())
+}
+
+model Report {
+  id        Int      @id @default(autoincrement())
+  type      String
+  path      String
+  createdAt DateTime @default(now())
+}
