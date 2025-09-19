@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { EventType } from '@prisma/client';
+import type { EventCreateRequest } from '@/types/event';
+import { EventType } from '@/types/event';
 
 export async function POST(req: Request) {
   try {
-    const { studentId, type, comment, authorId } = await req.json();
+    const { studentId, type, comment, authorId } = (await req.json()) as EventCreateRequest;
     
     // Calcul des points selon le type
     let points = 0;

@@ -5,9 +5,11 @@ import { prisma } from '@/lib/prisma';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
 
+import type { LoginRequest } from '@/types/auth';
+
 export async function POST(req: Request) {
   try {
-    const { username, password } = await req.json();
+    const { username, password } = (await req.json()) as LoginRequest;
 
     const user = await prisma.user.findUnique({
       where: { username }

@@ -1,27 +1,15 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import type { ClassCreateRequest, ClassResponse } from '@/types/class';
 
-export async function GET(req: Request) {
-  try {
-    const classes = await prisma.class.findMany({
-      include: {
-        students: true
-      }
-    });
-
-    return NextResponse.json(classes);
-  } catch (error) {
-    console.error('Erreur classes:', error);
-    return NextResponse.json(
-      { error: 'Erreur serveur' },
-      { status: 500 }
-    );
-  }
+export async function GET() {
+  const classes = await prisma.class.findMany();
+  return NextResponse.json(classes satisfies ClassResponse[]);
 }
 
 export async function POST(req: Request) {
   try {
-    const { name } = await req.json();
+    const { name } = (await req.json()) as ClassCreateRequest;
     
     const newClass = await prisma.class.create({
       data: { name }
