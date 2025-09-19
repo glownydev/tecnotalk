@@ -5,7 +5,10 @@ import { EventType } from '@/types/event';
 
 export async function POST(req: Request) {
   try {
-    const { studentId, type, comment, authorId } = (await req.json()) as EventCreateRequest;
+    const data = await req.json() as { studentId: string; authorId: string; type: EventType; comment?: string };
+    const studentId = parseInt(data.studentId);
+    const authorId = parseInt(data.authorId);
+    const { type, comment } = data;
     
     // Calcul des points selon le type
     let points = 0;
@@ -24,7 +27,7 @@ export async function POST(req: Request) {
     const event = await prisma.event.create({
       data: {
         studentId,
-        type: type as EventType,
+        type,
         points,
         comment,
         authorId

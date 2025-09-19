@@ -3,12 +3,11 @@ export type ClassCreateRequest = {
 };
 
 export type ClassResponse = {
-  id: string;
+  id: number;
   name: string;
   createdAt: Date;
-  updatedAt: Date;
 };
 
 export type StudentsInClassRequest = {
-  classId: string;
+  classId: number;
 };

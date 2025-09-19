@@ -1,8 +1,8 @@
-export type EventType = 'pos' | 'neg' | 'croix' | 'absence' | 'retard';
+export type EventType = 'pos' | 'neg' | 'croix';
 
 export type EventCreateRequest = {
-  studentId: string;
+  studentId: number;
   type: EventType;
   comment?: string;
-  authorId: string;
+  authorId: number;
 };

@@ -32,6 +32,6 @@ export default defineConfig({
         },
       },
     ]) as PluginOption,
-    renderer() as PluginOption,
+    renderer() as unknown as PluginOption,
   ],
 });

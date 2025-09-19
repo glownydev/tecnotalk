@@ -3,7 +3,13 @@ import { prisma } from '@/lib/prisma';
 import type { ClassCreateRequest, ClassResponse } from '@/types/class';
 
 export async function GET() {
-  const classes = await prisma.class.findMany();
+  const classes = await prisma.class.findMany({
+    select: {
+      id: true,
+      name: true,
+      createdAt: true,
+    },
+  });
   return NextResponse.json(classes satisfies ClassResponse[]);
 }
 
@@ -12,10 +18,13 @@ export async function POST(req: Request) {
     const { name } = (await req.json()) as ClassCreateRequest;
     
     const newClass = await prisma.class.create({
-      data: { name }
-    });
-
-    return NextResponse.json(newClass);
+      data: { name },
+      select: {
+        id: true,
+        name: true,
+        createdAt: true
+      }
+    });    return NextResponse.json(newClass);
   } catch (error) {
     console.error('Erreur création classe:', error);
     return NextResponse.json(
