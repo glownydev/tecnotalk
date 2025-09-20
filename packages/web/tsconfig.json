@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
     "target": "es2018",
-    "module": "commonjs",
-    "lib": ["es2018", "esnext.asynciterable"],
+    "module": "esnext",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "jsx": "preserve",
     "strict": true,
     "rootDir": ".",
     "outDir": "dist",
@@ -11,6 +12,8 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "baseUrl": ".",
+    "moduleResolution": "node",
+    "isolatedModules": true,
     "paths": {
       "@/*": ["./src/*"]
     }
