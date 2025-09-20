@@ -1,0 +1,11 @@
+{
+  "/_not-found": "/_not-found",
+  "/page": "/",
+  "/admin/page": "/admin",
+  "/api/classes/route": "/api/classes",
+  "/api/events/route": "/api/events",
+  "/api/auth/admin/route": "/api/auth/admin",
+  "/api/auth/login/route": "/api/auth/login",
+  "/api/students/[id]/route": "/api/students/[id]",
+  "/api/classes/[id]/students/route": "/api/classes/[id]/students"
+}
